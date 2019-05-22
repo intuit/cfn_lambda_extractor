@@ -37,7 +37,7 @@ example of extracting, replacing variables and finally testing inline Lambda cod
 To install directly from GitHub.
 
 ```shell
-pip3 install -i git+https://github.com/intuit/cfn_lambda_extractor
+pip3 install git+https://github.com/intuit/cfn_lambda_extractor
 ```
 ## Usage
 
