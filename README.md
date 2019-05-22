@@ -1,4 +1,4 @@
-# cfn_lambda_extractor
+# Cloud Formation Lambda Extractor
 
 AWS Cloudformation extracts [inline Lambda function code](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-lambda-function-code.html)
 from a Cloudformation template.
@@ -63,7 +63,7 @@ tmp_test_lambda_function1.py
 ```
 
 Variable substituation for Cloudformation substituation of variables in the form
-of **${VARIABLE}** is supported.  You can include a list of variables to replace as
+of `${VARIABLE}` is supported.  You can include a list of variables to replace as
 a command line argument.
 
 ```
@@ -87,11 +87,11 @@ make test
 
 ## Constraints and Known Limitations
 
-Lots of opportunity to improve me...
+Known Issues and Limitations
 
 * Only supports YAML.
 * Only supports Python functions.
-* Only supports replacement of ${VAR} style cfn substituation (not Fn::Sub style or other variables).
+* Only supports replacement of `${VAR}` style cfn substituation (not Fn::Sub style or other variables).
 * No other psuedo parameters or replacements.
 
 Copyright (c) 2019 Intuit
