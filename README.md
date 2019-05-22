@@ -26,7 +26,7 @@ the code is difficult to test.
 
 To support extracting and testing code included in your Cloudformation template, **cfn_lambda_extractor**
 will parse your AWS Cloudformation templates, remove inline code, replace variables
-populated by **${variable}** styble [sub](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-sub.html)
+populated by `${variable}` styble [sub](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/intrinsic-function-reference-sub.html)
 statements, and write the modified template to a directory for testing.
 
 See [example](https://github.com/intuit/cfn_lambda_extractor/tree/master/example) directory for a full working
