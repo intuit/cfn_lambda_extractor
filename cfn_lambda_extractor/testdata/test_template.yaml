@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: I am a test template that will have a function loaded
+Outputs:
+  TestFunction1:
+    Value: !Ref TestFunction1
+Resources:
+  MyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+# Below me is a blank line
+
+  TestFunction1:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile: |
+          def handler(event, context):
+              val = "${ValueToSub1}"
+              print("This is a test with value '{}'.".format(val))
+
+      Handler: index.handler
+      Role: !GetAtt MyRole.Arn
+      Runtime: python3.6
+# Below me is a line with just spaces 
+    
+  TestFunction2:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile: !Sub
+          - |
+            def handler(event, context):
+                val = "${ValueToSub2}"
+                print("This is a test with value '{}'.".format(val))
+
+          - ValueToSub2: "test1234"
+      Handler: index.handler
+      Role: !GetAtt MyRole.Arn
+      Runtime: python3.6

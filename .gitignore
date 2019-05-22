@@ -1,0 +1,7 @@
+**/__pycache__/
+**/__pycache__/*
+
+**/example/test_cfn_example_lambda*
+
+MANIFEST
+dist/*
