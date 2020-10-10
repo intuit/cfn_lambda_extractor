@@ -1,6 +1,8 @@
 import logging
 import os
 import re
+import json
+
 
 def load_input_file(filename):
     logging.info("Loading input from file '{}'.".format(filename))
@@ -162,8 +164,26 @@ def convert_fns_to_str(fns):
     return {k: "\n".join(v) for (k, v) in fns.items()}
 
 def extract_functions(cfn_data, values, convert_cfn_variables=True):
-    resource_data = load_resources(cfn_data)
-    fns = load_functions_from_resource_data(resource_data)
+    try:
+        logging.error(f"Check if Cloudformation data is JSON")
+        json_data = json.loads(cfn_data)
+        resources = json_data.get("Resources", [])
+        code_fns = [resource.get("Properties").get("Code") for resource in resources.values() if resource.get("Type") == "AWS::Lambda::Function"]
+        fns = {}
+        for idx, code in enumerate(code_fns):
+            zip_file = code.get("ZipFile")
+            fn_string = ''
+            if isinstance(zip_file, str):
+                fn_string = zip_file
+            elif isinstance(zip_file, dict):
+                key = list(zip_file.keys())[0]
+                fn_string = zip_file.get(key)[0]
+            fns[str(idx)] = [x for x in fn_string.split('\n') if len(x) > 0]
+    except ValueError as err:
+        logging.error(f"Cloudformation data is not serializable JSON: {err}")
+        resource_data = load_resources(cfn_data)
+        fns = load_functions_from_resource_data(resource_data)
+
     modified_fns = format_python_code(fns)
     replaced_values = replace_values(modified_fns, values)
     return convert_fns_to_str(replaced_values)
