@@ -167,11 +167,11 @@ def extract_functions(cfn_data, values, convert_cfn_variables=True):
     fns = {}
     try:
         # Interpret cfn_data as JSON
-        logging.info(f"Check if Cloudformation data is JSON")
+        logging.info("Check if Cloudformation data is JSON")
         json_data = json.loads(cfn_data)
     except ValueError as err:
         # cfn_data is not JSON serializable, so assume its YAML and extract functions
-        logging.info(f"Cloudformation data is not serializable JSON: {err}")
+        logging.info("Cloudformation data is not serializable JSON: {}".format(err))
         resource_data = load_resources(cfn_data)
         fns = load_functions_from_resource_data(resource_data)
     else:
@@ -192,8 +192,6 @@ def extract_functions(cfn_data, values, convert_cfn_variables=True):
     modified_fns = format_python_code(fns)
     replaced_values = replace_values(modified_fns, values)
     return convert_fns_to_str(replaced_values)
-
-
 
 def parse_csv_input_values(input_values):
     logging.debug("Paring input '{}'.".format(input_values))

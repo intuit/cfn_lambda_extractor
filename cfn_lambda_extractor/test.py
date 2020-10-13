@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 import tempfile
 import unittest
 
@@ -30,7 +31,8 @@ class Test(unittest.TestCase):
     def test_value_not_provided(self):
         with self.assertRaises(Exception) as e:
             cfn_lambda_extractor.extract_functions(self.data, {})
-        self.assertEqual(str(e.exception), "Value 'ValueToSub1' not provided.")
+        err = str(e.exception)
+        self.assertTrue(re.match("Value 'ValueToSub.' not provided.", err))
 
     def test_no_resources(self):
         with self.assertRaises(Exception) as e:
