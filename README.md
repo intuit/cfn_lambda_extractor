@@ -89,9 +89,9 @@ make test
 
 Known Issues and Limitations
 
-* Only supports YAML.
+* Basic JSON support for '{ "Fn::Sub" : String }' style variables. See [here](https://github.com/intuit/cfn_lambda_extractor/blob/master/cfn_lambda_extractor/testdata/test_template.json).
 * Only supports Python functions.
-* Only supports replacement of `${VAR}` style cfn substituation (not Fn::Sub style or other variables).
+* Only supports replacement of `${VAR}` style cfn substituation (not Fn::Sub style or other variables) in YAML.
 * No other psuedo parameters or replacements.
 
-Copyright (c) 2019 Intuit
+Copyright (c) 2020 Intuit
