@@ -48,5 +48,5 @@ def run():
         write_functions(fns)
         logging.info("Completed processing cfn template.")
     except Exception as e:
-        print("Received error '{}'.".format(str(e)))
+        logging.exception("Received error '{}'.".format(str(e)))
         sys.exit(1)

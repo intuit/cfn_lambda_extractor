@@ -1,6 +1,8 @@
 import logging
 import os
 import re
+import json
+
 
 def load_input_file(filename):
     logging.info("Loading input from file '{}'.".format(filename))
@@ -162,8 +164,31 @@ def convert_fns_to_str(fns):
     return {k: "\n".join(v) for (k, v) in fns.items()}
 
 def extract_functions(cfn_data, values, convert_cfn_variables=True):
-    resource_data = load_resources(cfn_data)
-    fns = load_functions_from_resource_data(resource_data)
+    fns = {}
+    try:
+        # Interpret cfn_data as JSON
+        logging.info("Check if Cloudformation data is JSON")
+        json_data = json.loads(cfn_data)
+    except ValueError as err:
+        # cfn_data is not JSON serializable, so assume its YAML and extract functions
+        logging.info("Cloudformation data is not serializable JSON: {}".format(err))
+        resource_data = load_resources(cfn_data)
+        fns = load_functions_from_resource_data(resource_data)
+    else:
+        # Continue to extract functions assuming cfn_data is JSON
+        resources = json_data.get("Resources", [])
+        code_fns = [resource.get("Properties").get("Code") for resource in resources.values() if resource.get("Type") == "AWS::Lambda::Function"]
+        for idx, code in enumerate(code_fns):
+            zip_file = code.get("ZipFile")
+            fn_string = ''
+            if isinstance(zip_file, str):
+                fn_string = zip_file
+            elif isinstance(zip_file, dict):
+                key = list(zip_file.keys())[0]
+                fn_string = zip_file.get(key)[0]
+            fns[str(idx)] = [x for x in fn_string.split('\n') if len(x) > 0]
+
+    # Regardless, JSON/YAML format, format code and return string with replaced values 
     modified_fns = format_python_code(fns)
     replaced_values = replace_values(modified_fns, values)
     return convert_fns_to_str(replaced_values)

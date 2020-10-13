@@ -10,11 +10,11 @@ class Test(unittest.TestCase):
     def setUp(self):
         d = os.path.dirname(os.path.realpath(__file__))
         self.testdata_dir = d + "/testdata/"
-        test_template = self.testdata_dir + "test_template.yaml"
+        test_template = self.testdata_dir + "test_template.json"
         self.data = cfn_lambda_extractor.load_input_file(test_template)
 
     def test_template_extraction(self):
-        values = {"ValueToSub1": "test1234","ValueToSub2": "test4321"}
+        values = {"ValueToSub1": "test1234"}
         fns = cfn_lambda_extractor.extract_functions(self.data, values)
 
         efn1 = open(self.testdata_dir + "expected_output_fn1.py")
@@ -25,14 +25,13 @@ class Test(unittest.TestCase):
         expected_output_fn2 = efn2.read()
         efn2.close()
 
-        self.assertEqual("".join(fns["1"]), expected_output_fn2.rstrip('\n'))
         self.assertEqual("".join(fns["0"]), expected_output_fn1.rstrip('\n'))
 
     def test_value_not_provided(self):
         with self.assertRaises(Exception) as e:
             cfn_lambda_extractor.extract_functions(self.data, {})
         err = str(e.exception)
-        self.assertTrue(re.match("Value 'ValueToSub.' not provided.", err))
+        self.assertTrue(re.match("Value 'ValueToSub.' not provided.", err)) 
 
     def test_no_resources(self):
         with self.assertRaises(Exception) as e:
